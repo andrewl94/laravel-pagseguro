@@ -665,4 +665,20 @@ class PagSeguroRecorrente extends PagSeguroClient
 
         return (string) $this->sendJsonTransaction($data, $this->url['preApproval'].'/request/'.$this->preApprovalCode.'/payment', 'PUT');
     }
+
+
+    /**
+     * Suspende ou Reativa um pagamento recorrente.
+     *
+     * @param string $preApprovalCode
+     *
+     * @return \SimpleXMLElement
+     */
+    public function suspendReactivatePreApproval($preApprovalCode)
+    {
+        return $this->sendTransaction([
+            'email' => $this->email,
+            'token' => $this->token,
+        ], $this->url['preApprovalSuspendReactivate'].$preApprovalCode, false);
+    }
 }
