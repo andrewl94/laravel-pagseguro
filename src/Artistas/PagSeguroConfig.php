@@ -97,7 +97,8 @@ class PagSeguroConfig
             'notifications'                 => 'https://ws.'.$sandbox.'pagseguro.uol.com.br/v3/transactions/notifications/',
             'javascript'                    => 'https://stc.'.$sandbox.'pagseguro.uol.com.br/pagseguro/api/v2/checkout/pagseguro.directpayment.js',
             'boletos'                       => 'https://ws.pagseguro.uol.com.br/recurring-payment/boletos',
-            'preApprovalSuspendReactivate'  => 'https://ws.'.$sandbox.'pagseguro.uol.com.br/v2/pre-approvals/status/',
+            'preApprovalSuspend'  => 'https://ws.'.$sandbox.'pagseguro.uol.com.br/v2/pre-approvals/suspended/',
+            'preApprovalReactivate'  => 'https://ws.'.$sandbox.'pagseguro.uol.com.br/v2/pre-approvals/active/',
         ];
 
         $this->url = $url;
