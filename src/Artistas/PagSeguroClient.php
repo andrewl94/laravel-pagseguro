@@ -129,7 +129,7 @@ class PagSeguroClient extends PagSeguroConfig
         if (isset($getInfo['http_code']) && $getInfo['http_code'] == '400') {
             $this->log->error('400.', ['Retorno:' => $result]);
 
-            throw new PagSeguroException(['Retorno:' => $result], 1000);
+            throw new PagSeguroException(json_encode((array) $result), 1000);
         }
         if ($result === false) {
             $this->log->error('Erro ao enviar a transação', ['Retorno:' => $result]);
