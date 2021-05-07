@@ -675,10 +675,11 @@ class PagSeguroRecorrente extends PagSeguroClient
      */
     public function suspendPreApproval($preApprovalCode)
     {
-        return $this->sendTransaction([
-            'email' => $this->email,
-            'token' => $this->token,
-        ], $this->url['preApprovalSuspend'].$preApprovalCode, false);
+        $data = [
+            'status' => 'suspended'
+        ];
+
+        return (string) $this->sendJsonTransaction([], $this->url['preApproval'].'/'.$preApprovalCode.'/status', 'PUT', ['Accept: application/vnd.pagseguro.com.br.v3+json;charset=ISO-8859-1'],$data);
     }
 
     /**
@@ -690,9 +691,10 @@ class PagSeguroRecorrente extends PagSeguroClient
      */
     public function reactivateApproval($preApprovalCode)
     {
-        return $this->sendTransaction([
-            'email' => $this->email,
-            'token' => $this->token,
-        ], $this->url['preApprovalReactivate'].$preApprovalCode, false);
+        $data = [
+            'status' => 'active'
+        ];
+        
+        return (string) $this->sendJsonTransaction([], $this->url['preApproval'].'/'.$preApprovalCode.'/status', 'PUT', ['Accept: application/vnd.pagseguro.com.br.v3+json;charset=ISO-8859-1'],$data);
     }
 }

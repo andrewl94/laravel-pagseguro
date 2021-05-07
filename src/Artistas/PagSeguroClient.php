@@ -50,31 +50,40 @@ class PagSeguroClient extends PagSeguroConfig
      * @param string $url        Padrão $this->url['transactions']
      * @param string $method
      * @param array  $headers
+     * @param array  $urlParams  Padrão array()
      *
      * @throws \Artistas\PagSeguro\PagSeguroException
      *
      * @return \SimpleXMLElement
      */
-    protected function sendJsonTransaction(array $parameters, $url = null, $method = 'POST', array $headers = ['Accept: application/vnd.pagseguro.com.br.v3+json;charset=ISO-8859-1', 'Content-Type: application/json; charset=UTF-8'])
+    protected function sendJsonTransaction(array $parameters, $url = null, $method = 'POST', array $headers = ['Accept: application/vnd.pagseguro.com.br.v3+json;charset=ISO-8859-1', 'Content-Type: application/json; charset=UTF-8'], array $urlParams = array())
     {
         if ($url === null) {
             $url = $this->url['transactions'];
         }
         $url .= '?email='.$this->email.'&token='.$this->token;
+        
+        foreach ($urlParams as $key => $value) {
+            $url .= "&".$key."=".$value;
+        }
 
-        $parameters = $this->array_filter_recursive($parameters);
+        
+        if(empty($parameters) === false ){
+            $parameters = $this->array_filter_recursive($parameters);
 
-        array_walk_recursive($parameters, function (&$value, $key) {
-            $value = utf8_encode($value);
-        });
-        $parameters = json_encode($parameters);
+            array_walk_recursive($parameters, function (&$value, $key) {
+                $value = utf8_encode($value);
+            });
+            $parameters = json_encode($parameters);
+        } else {
+            $parameters = null;
+        }
 
         if ($method == 'GET') {
             $parameters = null;
         }
 
         $result = $this->executeCurl($parameters, $url, $headers, $method);
-
         return $this->formatResultJson($result);
     }
 
@@ -116,6 +125,11 @@ class PagSeguroClient extends PagSeguroConfig
             $this->log->error('Serviço em manutenção.', ['Retorno:' => $result]);
 
             throw new PagSeguroException('Serviço em manutenção.', 1000);
+        }
+        if (isset($getInfo['http_code']) && $getInfo['http_code'] == '400') {
+            $this->log->error('400.', ['Retorno:' => $result]);
+
+            throw new PagSeguroException('400.', 1000);
         }
         if ($result === false) {
             $this->log->error('Erro ao enviar a transação', ['Retorno:' => $result]);
