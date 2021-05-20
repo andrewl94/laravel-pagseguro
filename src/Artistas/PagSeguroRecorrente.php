@@ -673,7 +673,7 @@ class PagSeguroRecorrente extends PagSeguroClient
      *
      * @return \SimpleXMLElement
      */
-    public function suspendPreApproval($preApprovalCode)
+    public function suspendPreApproval(String $preApprovalCode)
     {
         $data = [
             'status' => 'suspended'
@@ -689,7 +689,7 @@ class PagSeguroRecorrente extends PagSeguroClient
      *
      * @return \SimpleXMLElement
      */
-    public function reactivateApproval($preApprovalCode)
+    public function reactivateApproval(String $preApprovalCode)
     {
         $data = [
             'status' => 'active'
@@ -697,4 +697,25 @@ class PagSeguroRecorrente extends PagSeguroClient
         
         return (string) $this->sendJsonTransaction([], $this->url['preApproval'].'/'.$preApprovalCode.'/status', 'PUT', ['Accept: application/vnd.pagseguro.com.br.v3+json;charset=ISO-8859-1'],$data);
     }
+
+    /**
+     * Cobrar Plano - Permite a cobrança do valor do plano.
+     *
+     * @param string $orderCode
+     *
+     * @return \SimpleXMLElement
+     */
+    public function requestPayment(String $preApprovalCode, String $reference, Array $items, String $senderHash = "", String $senderIp="")
+    {
+        $data = [
+            "preApprovalCode"=>$preApprovalCode,
+            "reference"=>$reference,
+            "senderHash"=>$senderHash,
+            "senderIp"=>$senderIp,
+            "items"=>$items,
+        ];
+        
+        return $this->sendJsonTransaction([], $this->url['preApproval'].'/payment','POST', ['Accept: application/vnd.pagseguro.com.br.v3+json;charset=ISO-8859-1'],$data);
+    }
+
 }
